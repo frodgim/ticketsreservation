@@ -18,7 +18,15 @@ public class Booking {
     @Size(min = 10, message = "FullName should have at least 10 characters")
     private String fullName;
 
-    private float price;
+    //Only contemplating from
+    @NotNull
+    private String from;
+
+    @NotNull
+    private String to;
+
+    //I've pre-assigned because the price is not important for this solution
+    private float price = 20;
 
     @NotNull
     private Integer seatNumber;
@@ -64,5 +72,26 @@ public class Booking {
 
     public void setSectionId(String sectionId) {
         this.sectionId = sectionId;
+    }
+
+    public String getFrom() {
+        return from;
+    }
+
+    public void setFrom(String from) {
+        this.from = from;
+    }
+
+    public String getTo() {
+        return to;
+    }
+
+    public void setTo(String to) {
+        this.to = to;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Booking [id=%s, fullname=%s, seatNumber=%s, section=%s]", id, fullName,seatNumber, sectionId);
     }
 }
