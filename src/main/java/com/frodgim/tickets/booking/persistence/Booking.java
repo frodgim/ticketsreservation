@@ -29,7 +29,7 @@ public class Booking {
     //I've pre-assigned because the price is not important for this solution
     private float price = 20;
 
-    @NotNull
+
     private Integer seatNumber;
 
     @NotNull

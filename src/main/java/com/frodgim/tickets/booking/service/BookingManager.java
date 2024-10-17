@@ -9,9 +9,8 @@ import com.frodgim.tickets.booking.persistence.BookingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class BookingManager {
@@ -27,7 +26,7 @@ public class BookingManager {
 
 
     private void initializeCapacity(){
-        this.currentCapacity = new HashMap<>();
+        this.currentCapacity = new ConcurrentHashMap<>();
         this.currentCapacity.put("A", new TrainSection("A"));
         this.currentCapacity.put("B", new TrainSection("B"));
     }
@@ -66,11 +65,10 @@ public class BookingManager {
         TrainSection currentSection = getSection(booking.getSectionId());
         removeFromSection(booking, currentSection);
 
+
+        booking.setSectionId(newSectionId);
         TrainSection newSection = getSection(newSectionId);
         addToSection(booking, newSection);
-
-
-
 
         return booking;
     }
@@ -127,7 +125,21 @@ public class BookingManager {
     }
 
     private synchronized int assignSeat(TrainSection section) {
-        return section.getBookingList().stream().mapToInt(Booking::getSeatNumber).max().orElse(0) + 1;
+        int candidateSeat = 1;
+
+        section.getBookingList().sort(Comparator.comparingInt(Booking::getSeatNumber));
+        for(Booking booking : section.getBookingList()){
+           if(candidateSeat < booking.getSeatNumber()){
+               break;
+           }
+           else{
+               candidateSeat++;
+           }
+        }
+
+        return candidateSeat;
+
+        //return section.getBookingList().stream().mapToInt(Booking::getSeatNumber).max().orElse(0) + 1;
     }
 
 }

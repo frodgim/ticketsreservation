@@ -33,7 +33,7 @@ public class BookingController {
         return ResponseEntity.ok(booking);
     }
 
-    @PostMapping("/")
+    @PostMapping()
     public ResponseEntity<Booking> postBooking(@Valid @RequestBody Booking booking) throws BookingException, MaxCapacityExceededException {
         Booking processedBooking = bookingManager.doBooking(booking);
 
