@@ -2,8 +2,7 @@ package com.frodgim.tickets.booking;
 
 
 import com.frodgim.tickets.booking.dto.RouteDetail;
-import com.frodgim.tickets.booking.persistence.Booking;
-import com.frodgim.tickets.booking.service.BookingManager;
+import com.frodgim.tickets.booking.service.BookingManagerNoScale;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +15,12 @@ public class RouteController {
 
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
     @Autowired
-    private BookingManager bookingManager;
+    private BookingManagerNoScale bookingManagerNoScale;
 
     @GetMapping("/{id}")
     public ResponseEntity<RouteDetail> retrieveRoute() {
 
-        RouteDetail routeDetail = bookingManager.getRouteDetail();
+        RouteDetail routeDetail = bookingManagerNoScale.getRouteDetail();
 
         return ResponseEntity.ok(routeDetail);
     }
