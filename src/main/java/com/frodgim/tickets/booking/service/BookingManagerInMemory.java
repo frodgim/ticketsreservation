@@ -1,11 +1,14 @@
 package com.frodgim.tickets.booking.service;
 
+import com.frodgim.tickets.booking.dto.BookingDetail;
 import com.frodgim.tickets.booking.dto.RouteDetail;
 import com.frodgim.tickets.booking.exceptions.BookingException;
 import com.frodgim.tickets.booking.exceptions.BookingNotFound;
 import com.frodgim.tickets.booking.exceptions.MaxCapacityExceededException;
 import com.frodgim.tickets.booking.persistence.Booking;
 import com.frodgim.tickets.booking.persistence.BookingRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,24 +16,15 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
-public class BookingManagerNoScale implements BookingManager {
+public class BookingManagerInMemory implements BookingManager {
+
+    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
     private int maxCapacity = 10;
-
     private Map<String, TrainSection> currentCapacity;
-
-
-    public BookingManagerNoScale(){
+    public BookingManagerInMemory(){
         initializeCapacity();
     }
-
-
-    private void initializeCapacity(){
-        this.currentCapacity = new ConcurrentHashMap<>();
-        this.currentCapacity.put("A", new TrainSection("A"));
-        this.currentCapacity.put("B", new TrainSection("B"));
-    }
-
 
     @Autowired
     private BookingRepository bookingRepository;
@@ -39,6 +33,7 @@ public class BookingManagerNoScale implements BookingManager {
     public Booking getBooking(Long id) throws BookingNotFound {
         Optional<Booking> booking =  bookingRepository.findById(id);
         if(booking.isEmpty()){
+            LOGGER.error("Booking is not found, id:{}", id);
             throw new BookingNotFound(id);
         }
 
@@ -60,6 +55,7 @@ public class BookingManagerNoScale implements BookingManager {
 
         Booking booking = getBooking(id);
         if(booking.getSectionId().equals(newSectionId)){
+            LOGGER.error("You have already booked in the same section");
             throw new BookingException("You have already booked in the same section");
         }
 
@@ -87,14 +83,26 @@ public class BookingManagerNoScale implements BookingManager {
     }
 
     @Override
-    public RouteDetail getRouteDetail(){
-        throw new UnsupportedOperationException("Not implemented yet!");
-    }
+    public RouteDetail getRouteDetail(String sectionId) throws BookingException {
+        checkIfValidSection(sectionId);
+        RouteDetail detail = new RouteDetail(sectionId);
 
 
-    @Override
-    public int getMaxCapacity() {
-        return maxCapacity;
+        TrainSection section = getSection(sectionId);
+
+        for(Booking booking: section.getBookingList()){
+
+            BookingDetail bookingDetail = new BookingDetail(){
+                {
+                    setFullName(booking.getFullName());
+                    setSeatNumber(booking.getSeatNumber());
+                }
+            };
+            detail.getBookingDetailList().add(bookingDetail);
+        }
+
+
+        return  detail;
     }
 
     @Override
@@ -102,16 +110,23 @@ public class BookingManagerNoScale implements BookingManager {
         this.maxCapacity = maxCapacity;
     }
 
+    private void initializeCapacity(){
+        this.currentCapacity = new ConcurrentHashMap<>();
+        this.currentCapacity.put("A", new TrainSection("A"));
+        this.currentCapacity.put("B", new TrainSection("B"));
+    }
+
     private void checkIfValidSection(String sectionId) throws BookingException{
         if(!sectionId.equals("A") && !sectionId.equals("B") ){
+            LOGGER.error("The only sections available are either A or B, received:{}", sectionId);
             throw new BookingException("The only sections available are either A or B, received:" + sectionId);
         }
     }
 
-
     private void checkCapacityInSection(String sectionId) throws  MaxCapacityExceededException {
         TrainSection section = getSection(sectionId);
         if(section.getBookingList().size() >= maxCapacity){
+            LOGGER.error("The maximum capacity has been exceeded on section:{}", sectionId);
             throw  new MaxCapacityExceededException("The maximum capacity has been exceeded on section:" + sectionId);
         }
     }
@@ -145,8 +160,6 @@ public class BookingManagerNoScale implements BookingManager {
         }
 
         return candidateSeat;
-
-        //return section.getBookingList().stream().mapToInt(Booking::getSeatNumber).max().orElse(0) + 1;
     }
 
 }

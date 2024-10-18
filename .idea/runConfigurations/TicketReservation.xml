@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="TicketReservation" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="com.frodgim.tickets.TicketReservationApiApplication" />
+    <module name="ticket-reservation-api" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

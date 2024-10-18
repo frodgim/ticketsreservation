@@ -9,6 +9,7 @@ public class RouteDetail {
     private List<BookingDetail> bookingDetailList;
 
     public RouteDetail(String sectionId){
+        this.sectionId = sectionId;
         bookingDetailList = new ArrayList<BookingDetail>();
     }
 

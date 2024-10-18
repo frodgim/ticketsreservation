@@ -15,9 +15,7 @@ public interface BookingManager {
 
     void cancelBooking(Long id) throws BookingNotFound;
 
-    RouteDetail getRouteDetail();
-
-    int getMaxCapacity();
+    RouteDetail getRouteDetail(String sectionId) throws BookingException;
 
     void setMaxCapacity(int maxCapacity);
 }

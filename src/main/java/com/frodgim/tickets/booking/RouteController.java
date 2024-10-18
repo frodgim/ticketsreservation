@@ -2,7 +2,8 @@ package com.frodgim.tickets.booking;
 
 
 import com.frodgim.tickets.booking.dto.RouteDetail;
-import com.frodgim.tickets.booking.service.BookingManagerNoScale;
+import com.frodgim.tickets.booking.exceptions.BookingException;
+import com.frodgim.tickets.booking.service.BookingManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,14 +14,13 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/route")
 public class RouteController {
 
-    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
     @Autowired
-    private BookingManagerNoScale bookingManagerNoScale;
+    private BookingManager bookingManager;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<RouteDetail> retrieveRoute() {
+    @GetMapping("/{sectionId}")
+    public ResponseEntity<RouteDetail> retrieveRoute(@PathVariable String sectionId) throws BookingException {
 
-        RouteDetail routeDetail = bookingManagerNoScale.getRouteDetail();
+        RouteDetail routeDetail = bookingManager.getRouteDetail(sectionId);
 
         return ResponseEntity.ok(routeDetail);
     }
