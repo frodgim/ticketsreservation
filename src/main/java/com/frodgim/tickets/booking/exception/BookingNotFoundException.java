@@ -1,4 +1,4 @@
-package com.frodgim.tickets.booking.exceptions;
+package com.frodgim.tickets.booking.exception;
 
 public class BookingNotFoundException extends  BookingException {
 

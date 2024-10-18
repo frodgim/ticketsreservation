@@ -1,9 +1,9 @@
 package com.frodgim.tickets.booking;
 
 import com.frodgim.tickets.booking.dto.RouteDetailDTO;
-import com.frodgim.tickets.booking.exceptions.BookingException;
-import com.frodgim.tickets.booking.exceptions.BookingNotFoundException;
-import com.frodgim.tickets.booking.exceptions.MaxCapacityExceededException;
+import com.frodgim.tickets.booking.exception.BookingException;
+import com.frodgim.tickets.booking.exception.BookingNotFoundException;
+import com.frodgim.tickets.booking.exception.MaxCapacityExceededException;
 import com.frodgim.tickets.booking.persistence.Booking;
 import com.frodgim.tickets.booking.service.BookingManager;
 import org.junit.jupiter.api.BeforeEach;

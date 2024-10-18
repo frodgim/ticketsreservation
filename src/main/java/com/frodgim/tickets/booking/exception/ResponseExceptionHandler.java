@@ -1,4 +1,4 @@
-package com.frodgim.tickets.booking.exceptions;
+package com.frodgim.tickets.booking.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
