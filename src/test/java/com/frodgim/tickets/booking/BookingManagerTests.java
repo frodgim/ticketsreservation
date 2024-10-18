@@ -11,7 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 public class BookingManagerTests {
@@ -41,16 +42,7 @@ public class BookingManagerTests {
 
     }
 
-    @Test
-    public void testGetBooking_NotFound() {
-        //Arrange
 
-        //Action
-
-        //Assert
-        BookingNotFoundException exception = assertThrows(BookingNotFoundException.class,
-                    () -> bookingManager.getBooking(1L));
-    }
 
     @Test
     public void testGetBooking_Success() throws BookingException, MaxCapacityExceededException {
@@ -60,6 +52,21 @@ public class BookingManagerTests {
         Booking booking = bookingManager.doBooking(bookingSample);
         //Assert
         assertEquals(bookingSample.getId(), booking.getId());
+    }
+
+    @Test
+    public void testGetBooking_NotFound() {
+        //Arrange
+        Booking bookingSample = getSampleBooking(1L, "Paco Rodriguez", "A");
+        //Action
+        bookingManager.setMaxCapacity(0);
+        //Assert
+        //BookingNotFoundException exception = assertThrows(BookingNotFoundException.class,
+        //        () -> bookingManager.getBooking(1L));
+
+        BookingNotFoundException exception = assertThrows(BookingNotFoundException.class,
+                () -> bookingManager.getBooking(0L));
+
     }
 
     @Test
