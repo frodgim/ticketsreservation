@@ -3,7 +3,7 @@ package com.frodgim.tickets.booking.service;
 import com.frodgim.tickets.booking.dto.BookingDetailDTO;
 import com.frodgim.tickets.booking.dto.RouteDetailDTO;
 import com.frodgim.tickets.booking.exceptions.BookingException;
-import com.frodgim.tickets.booking.exceptions.BookingNotFound;
+import com.frodgim.tickets.booking.exceptions.BookingNotFoundException;
 import com.frodgim.tickets.booking.exceptions.MaxCapacityExceededException;
 import com.frodgim.tickets.booking.persistence.Booking;
 import com.frodgim.tickets.booking.persistence.BookingRepository;
@@ -30,11 +30,11 @@ public class BookingManagerInMemory implements BookingManager {
     private BookingRepository bookingRepository;
 
     @Override
-    public Booking getBooking(Long id) throws BookingNotFound {
+    public Booking getBooking(Long id) throws BookingNotFoundException {
         Optional<Booking> booking =  bookingRepository.findById(id);
         if(booking.isEmpty()){
             LOGGER.error("Booking is not found, id:{}", id);
-            throw new BookingNotFound(id);
+            throw new BookingNotFoundException(id);
         }
 
         return booking.get();
@@ -50,7 +50,7 @@ public class BookingManagerInMemory implements BookingManager {
     }
 
     @Override
-    public Booking modifySeatBooking(Long id, String newSectionId) throws BookingException, MaxCapacityExceededException, BookingNotFound {
+    public Booking modifySeatBooking(Long id, String newSectionId) throws BookingException, MaxCapacityExceededException, BookingNotFoundException {
         checkIfValidSection(newSectionId);
 
         Booking booking = getBooking(id);
@@ -73,7 +73,7 @@ public class BookingManagerInMemory implements BookingManager {
     }
 
     @Override
-    public void cancelBooking(Long id) throws BookingNotFound {
+    public void cancelBooking(Long id) throws BookingNotFoundException {
         Booking booking = getBooking(id);
 
         TrainSection currentSection = getSection(booking.getSectionId());
@@ -110,6 +110,11 @@ public class BookingManagerInMemory implements BookingManager {
         this.maxCapacity = maxCapacity;
     }
 
+    @Override
+    public void clear() {
+        initializeCapacity();
+    }
+
     private void initializeCapacity(){
         this.currentCapacity = new ConcurrentHashMap<>();
         this.currentCapacity.put("A", new TrainSection("A"));
@@ -117,7 +122,7 @@ public class BookingManagerInMemory implements BookingManager {
     }
 
     private void checkIfValidSection(String sectionId) throws BookingException{
-        if(!sectionId.equals("A") && !sectionId.equals("B") ){
+        if(!"A".equals(sectionId) && !"B".equals(sectionId) ){
             LOGGER.error("The only sections available are either A or B, received:{}", sectionId);
             throw new BookingException("The only sections available are either A or B, received:" + sectionId);
         }

@@ -4,7 +4,7 @@ package com.frodgim.tickets.booking;
 import com.frodgim.tickets.booking.dto.BookingDTO;
 import com.frodgim.tickets.booking.dto.CapacityDTO;
 import com.frodgim.tickets.booking.exceptions.BookingException;
-import com.frodgim.tickets.booking.exceptions.BookingNotFound;
+import com.frodgim.tickets.booking.exceptions.BookingNotFoundException;
 import com.frodgim.tickets.booking.exceptions.MaxCapacityExceededException;
 import com.frodgim.tickets.booking.persistence.Booking;
 import com.frodgim.tickets.booking.service.BookingManagerInMemory;
@@ -21,7 +21,7 @@ public class BookingController {
     private BookingManagerInMemory bookingManager;
 
     @GetMapping("/{id}")
-    public ResponseEntity<BookingDTO> retrieveBooking(@PathVariable Long id) throws BookingNotFound {
+    public ResponseEntity<BookingDTO> retrieveBooking(@PathVariable Long id) throws BookingNotFoundException {
         try {
             BookingDTO booking = new BookingDTO(){
                 {
@@ -31,7 +31,7 @@ public class BookingController {
 
             return ResponseEntity.ok(booking);
         }
-        catch (BookingNotFound e){
+        catch (BookingNotFoundException e){
             return ResponseEntity.notFound().build();
         }
 
@@ -46,7 +46,7 @@ public class BookingController {
     }
 
     @PutMapping("/modify/{id}/{sectionId}")
-    public ResponseEntity<BookingDTO> modifySeat(@PathVariable Long id, @PathVariable String sectionId) throws BookingNotFound, BookingException, MaxCapacityExceededException  {
+    public ResponseEntity<BookingDTO> modifySeat(@PathVariable Long id, @PathVariable String sectionId) throws BookingNotFoundException, BookingException, MaxCapacityExceededException  {
         try {
             Booking processedBooking = bookingManager.modifySeatBooking(id,sectionId);
 
@@ -58,7 +58,7 @@ public class BookingController {
             return ResponseEntity.ok(booking);
 
         }
-        catch (BookingNotFound e){
+        catch (BookingNotFoundException e){
             return ResponseEntity.notFound().build();
         }
 
@@ -66,13 +66,13 @@ public class BookingController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> cancelBooking(@PathVariable Long id) throws  BookingNotFound {
+    public ResponseEntity<Object> cancelBooking(@PathVariable Long id) throws BookingNotFoundException {
         try {
             bookingManager.cancelBooking(id);
 
             return ResponseEntity.noContent().build();
         }
-        catch (BookingNotFound e){
+        catch (BookingNotFoundException e){
             return ResponseEntity.notFound().build();
         }
 
