@@ -22,18 +22,13 @@ public class BookingController {
 
     @GetMapping("/{id}")
     public ResponseEntity<BookingDTO> retrieveBooking(@PathVariable Long id) throws BookingNotFoundException {
-        try {
-            BookingDTO booking = new BookingDTO(){
-                {
-                    updateFromEntity(bookingManager.getBooking(id));
-                }
-            };
+        BookingDTO booking = new BookingDTO(){
+            {
+                updateFromEntity(bookingManager.getBooking(id));
+            }
+        };
 
-            return ResponseEntity.ok(booking);
-        }
-        catch (BookingNotFoundException e){
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(booking);
 
     }
 
@@ -47,34 +42,23 @@ public class BookingController {
 
     @PutMapping("/modify/{id}/{sectionId}")
     public ResponseEntity<BookingDTO> modifySeat(@PathVariable Long id, @PathVariable String sectionId) throws BookingNotFoundException, BookingException, MaxCapacityExceededException  {
-        try {
-            Booking processedBooking = bookingManager.modifySeatBooking(id,sectionId);
+        Booking processedBooking = bookingManager.modifySeatBooking(id,sectionId);
 
-            BookingDTO booking = new BookingDTO(){
-                {
-                    updateFromEntity(processedBooking);
-                }
-            };
-            return ResponseEntity.ok(booking);
-
-        }
-        catch (BookingNotFoundException e){
-            return ResponseEntity.notFound().build();
-        }
+        BookingDTO booking = new BookingDTO(){
+            {
+                updateFromEntity(processedBooking);
+            }
+        };
+        return ResponseEntity.ok(booking);
 
 
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> cancelBooking(@PathVariable Long id) throws BookingNotFoundException {
-        try {
-            bookingManager.cancelBooking(id);
+        bookingManager.cancelBooking(id);
 
-            return ResponseEntity.noContent().build();
-        }
-        catch (BookingNotFoundException e){
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.noContent().build();
 
     }
 
