@@ -1,7 +1,7 @@
 package com.frodgim.tickets.booking.service;
 
-import com.frodgim.tickets.booking.dto.BookingDetail;
-import com.frodgim.tickets.booking.dto.RouteDetail;
+import com.frodgim.tickets.booking.dto.BookingDetailDTO;
+import com.frodgim.tickets.booking.dto.RouteDetailDTO;
 import com.frodgim.tickets.booking.exceptions.BookingException;
 import com.frodgim.tickets.booking.exceptions.BookingNotFound;
 import com.frodgim.tickets.booking.exceptions.MaxCapacityExceededException;
@@ -83,16 +83,16 @@ public class BookingManagerInMemory implements BookingManager {
     }
 
     @Override
-    public RouteDetail getRouteDetail(String sectionId) throws BookingException {
+    public RouteDetailDTO getRouteDetail(String sectionId) throws BookingException {
         checkIfValidSection(sectionId);
-        RouteDetail detail = new RouteDetail(sectionId);
+        RouteDetailDTO detail = new RouteDetailDTO(sectionId);
 
 
         TrainSection section = getSection(sectionId);
 
         for(Booking booking: section.getBookingList()){
 
-            BookingDetail bookingDetail = new BookingDetail(){
+            BookingDetailDTO bookingDetail = new BookingDetailDTO(){
                 {
                     setFullName(booking.getFullName());
                     setSeatNumber(booking.getSeatNumber());

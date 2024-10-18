@@ -1,6 +1,6 @@
 package com.frodgim.tickets.booking.service;
 
-import com.frodgim.tickets.booking.dto.RouteDetail;
+import com.frodgim.tickets.booking.dto.RouteDetailDTO;
 import com.frodgim.tickets.booking.exceptions.BookingException;
 import com.frodgim.tickets.booking.exceptions.BookingNotFound;
 import com.frodgim.tickets.booking.exceptions.MaxCapacityExceededException;
@@ -15,7 +15,7 @@ public interface BookingManager {
 
     void cancelBooking(Long id) throws BookingNotFound;
 
-    RouteDetail getRouteDetail(String sectionId) throws BookingException;
+    RouteDetailDTO getRouteDetail(String sectionId) throws BookingException;
 
     void setMaxCapacity(int maxCapacity);
 }
